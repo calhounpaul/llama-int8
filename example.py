@@ -77,6 +77,7 @@ def load(
                     ]
             del checkpoint
         #if a save path is specified, save the model in INT8 format
+        model.cuda()
         if int8_save_path is not None:
             print("Saving int8 model file")
             torch.save(model.state_dict(), int8_save_path)
@@ -84,9 +85,9 @@ def load(
         print("Loading int8 model file")
         torch.set_default_tensor_type(torch.FloatTensor)
         model = Transformer(model_args)
-        model.load_state_dict(torch.load(int8_load_path,map_location="cpu"))
-
-    model.cuda()
+        model.load_state_dict(torch.load(int8_load_path,map_location="cuda"))
+        #model.cuda()
+    
 
     generator = LLaMA(model, tokenizer)
     print(
